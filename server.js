@@ -20,15 +20,18 @@ const users = [];
 const signInCodes = [];
 
 // =====================================================
-// NODEMAILER TRANSPORTER SETUP (Optimized for Render Cloud)
+// NODEMAILER TRANSPORTER SETUP (Render Cloud Compatible)
 // =====================================================
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
-    port: 465,
-    secure: true, // Use SSL
+    port: 587,
+    secure: false, // TLS via STARTTLS (Required for cloud servers like Render)
     auth: {
         user: "lakshmishenbagam33@gmail.com",
         pass: "ltnwolynuigrsviq"
+    },
+    tls: {
+        rejectUnauthorized: false
     },
     connectionTimeout: 10000, // 10 seconds timeout
     greetingTimeout: 5000,
@@ -544,7 +547,7 @@ app.post("/send-code", async (req, res) => {
     }
 
     const generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
-
+    
     // Refresh temporary sign-in code entry
     const existingIndex = signInCodes.findIndex(c => c.username === username);
     if (existingIndex !== -1) {
@@ -778,7 +781,7 @@ app.post("/reset-password", (req, res) => {
     }
 });
 
-// START SERVER (Uses dynamic port assigned by Render cloud)
+// START SERVER (Dynamic port binding for Render)
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Express server running on port ${PORT}`);
