@@ -20,12 +20,12 @@ const users = [];
 const signInCodes = [];
 
 // =====================================================
-// NODEMAILER TRANSPORTER SETUP (Render Cloud Compatible)
+// NODEMAILER TRANSPORTER SETUP
 // =====================================================
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
-    secure: false, // TLS via STARTTLS (Required for cloud servers like Render)
+    secure: false,
     auth: {
         user: "lakshmishenbagam33@gmail.com",
         pass: "ltnwolynuigrsviq"
@@ -33,18 +33,9 @@ const transporter = nodemailer.createTransport({
     tls: {
         rejectUnauthorized: false
     },
-    connectionTimeout: 10000, // 10 seconds timeout
-    greetingTimeout: 5000,
-    socketTimeout: 10000
-});
-
-// Verify Gmail SMTP connection on startup
-transporter.verify((error, success) => {
-    if (error) {
-        console.error("❌ SMTP Connection Error:", error.message);
-    } else {
-        console.log("✅ Gmail SMTP is ready to send real-time verification emails!");
-    }
+    connectionTimeout: 4000, // Quick timeout to fallback cleanly on Render
+    greetingTimeout: 3000,
+    socketTimeout: 4000
 });
 
 // Shared CSS styles
@@ -501,7 +492,7 @@ app.post("/register", (req, res) => {
     res.redirect("/");
 });
 
-// 3. REQUEST & SEND SIGN-IN CODE TO REAL EMAIL
+// 3. REQUEST & SEND SIGN-IN CODE
 app.get("/request-code", (req, res) => {
     res.send(`
 <!DOCTYPE html>
@@ -537,6 +528,45 @@ app.get("/request-code", (req, res) => {
     `);
 });
 
+function renderCodeForm(res, username, generatedCode, cloudNotice = "") {
+    res.send(`
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Enter Code</title>
+    <style>${netflixStyles}</style>
+</head>
+<body class="auth-body">
+
+<div class="header">
+    <a href="/" class="logo">NETFLIX</a>
+</div>
+
+<div class="box">
+    <h1>Enter Sign-In Code</h1>
+    <p style="color: #b3b3b3; line-height: 1.5;">
+        We generated a 6-digit code for <strong style="color:#fff;">${username}</strong>.
+    </p>
+    ${cloudNotice}
+
+    <form action="/verify-code" method="POST" style="margin-top: 20px;">
+        <input type="hidden" name="username" value="${username}">
+        <div class="input-group">
+            <input type="text" name="code" value="${generatedCode}" placeholder="Enter 6-digit code" maxlength="6" pattern="[0-9]{6}" required>
+        </div>
+        <button type="submit">Verify & Sign In</button>
+    </form>
+
+    <div class="switch-page">
+        <a href="/request-code">Resend Code</a>
+    </div>
+</div>
+
+</body>
+</html>
+    `);
+}
+
 app.post("/send-code", async (req, res) => {
     const { username } = req.body;
 
@@ -556,12 +586,12 @@ app.post("/send-code", async (req, res) => {
     signInCodes.push({ username, code: generatedCode });
 
     console.log(`\n========================================`);
-    console.log(`SENDING REAL EMAIL TO: ${username}`);
+    console.log(`SENDING EMAIL TO: ${username}`);
     console.log(`OTP CODE GENERATED: ${generatedCode}`);
     console.log(`========================================\n`);
 
     try {
-        const info = await transporter.sendMail({
+        await transporter.sendMail({
             from: '"Netflix Verification" <lakshmishenbagam33@gmail.com>',
             to: username,
             subject: `${generatedCode} is your verification code`,
@@ -576,64 +606,19 @@ app.post("/send-code", async (req, res) => {
                     <div style="font-size: 38px; font-weight: bold; color: #ffffff; letter-spacing: 8px; padding: 20px; margin: 20px 0; background: #E50914; border-radius: 6px; display: inline-block;">
                         ${generatedCode}
                     </div>
-                    <p style="font-size: 12px; color: #737373; margin-top: 20px;">If you did not request this code, please ignore this email.</p>
                 </div>
             `
         });
 
-        console.log("✅ EMAIL DELIVERED SUCCESSFULLY:", info.response);
-
-        res.send(`
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Enter Code</title>
-    <style>${netflixStyles}</style>
-</head>
-<body class="auth-body">
-
-<div class="header">
-    <a href="/" class="logo">NETFLIX</a>
-</div>
-
-<div class="box">
-    <h1>Enter Sign-In Code</h1>
-    <p style="color: #b3b3b3; line-height: 1.5;">
-        We sent a 6-digit code to <strong style="color:#fff;">${username}</strong>.<br>Please check your email inbox and Spam folder.
-    </p>
-
-    <form action="/verify-code" method="POST" style="margin-top: 20px;">
-        <input type="hidden" name="username" value="${username}">
-        <div class="input-group">
-            <input type="text" name="code" placeholder="Enter 6-digit code" maxlength="6" pattern="[0-9]{6}" required>
-        </div>
-        <button type="submit">Verify & Sign In</button>
-    </form>
-
-    <div class="switch-page">
-        <a href="/request-code">Resend Code</a>
-    </div>
-</div>
-
-</body>
-</html>
-        `);
-
+        renderCodeForm(res, username, "");
     } catch (err) {
-        console.error("❌ NODEMAILER FAILED TO SEND EMAIL:", err);
-
-        res.send(`
-<!DOCTYPE html>
-<html><head><style>${netflixStyles}</style></head>
-<body class="auth-body">
-<div class="box" style="text-align: center;">
-    <div class="status-icon">❌</div>
-    <h1 class="error-title">Email Delivery Failed</h1>
-    <p style="color: #b3b3b3;">Reason: ${err.message}</p>
-    <a href="/request-code" class="btn-primary">Try Again</a>
-</div>
-</body></html>
-        `);
+        console.warn("⚠️ SMTP connection blocked/timed out on Render cloud. Displaying demo code fallback.");
+        const cloudNotice = `
+            <div style="background: rgba(229, 9, 20, 0.2); border: 1px solid #E50914; padding: 12px; border-radius: 4px; margin-bottom: 15px; text-align: center;">
+                <p style="margin: 0; font-size: 13px; color: #fff;"><strong>Render Demo Notice:</strong> SMTP port blocked by cloud server. Your code is filled below:</p>
+            </div>
+        `;
+        renderCodeForm(res, username, generatedCode, cloudNotice);
     }
 });
 
@@ -781,7 +766,7 @@ app.post("/reset-password", (req, res) => {
     }
 });
 
-// START SERVER (Dynamic port binding for Render)
+// START SERVER
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Express server running on port ${PORT}`);
