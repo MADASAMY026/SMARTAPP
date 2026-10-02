@@ -33,7 +33,7 @@ const transporter = nodemailer.createTransport({
     tls: {
         rejectUnauthorized: false
     },
-    connectionTimeout: 4000, // Quick timeout to fallback cleanly on Render
+    connectionTimeout: 4000,
     greetingTimeout: 3000,
     socketTimeout: 4000
 });
@@ -295,7 +295,7 @@ function renderVideoDashboard(username) {
     <h2 style="font-size: 28px; margin-bottom: 10px;" id="currentTitle">Now Playing: 🤖 THALAPATHY VIJAY MOVIE</h2>
     
     <div class="video-wrapper">
-        <video id="mainPlayer" controls autoplay muted src="/mpd.mp4">
+        <video id="mainPlayer" controls autoplay muted src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">
             Your browser does not support HTML5 video.
         </video>
     </div>
@@ -304,22 +304,22 @@ function renderVideoDashboard(username) {
         <h3 style="font-size: 22px; margin-bottom: 15px; color: #e5e5e5;">Featured Scenes & Movies</h3>
         
         <div class="movie-grid">
-            <div class="movie-card" onclick="playMovie('/mpd.mp4', 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', '🤖 THALAPATHY VIJAY MOVIE')">
+            <div class="movie-card" onclick="playMovie('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', '🤖 THALAPATHY VIJAY MOVIE')">
                 <h3>🤖 THALAPATHY VIJAY MOVIE</h3>
                 <p>DIALOGUE SCENE</p>
             </div>
 
-            <div class="movie-card" onclick="playMovie('/scifi.mp4', 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4', '🚀 Sci-Fi Asteroid Escape')">
+            <div class="movie-card" onclick="playMovie('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4', '🚀 Sci-Fi Asteroid Escape')">
                 <h3>🚀 Sci-Fi Asteroid Escape</h3>
                 <p>Spaceship Flight Sequence</p>
             </div>
 
-            <div class="movie-card" onclick="playMovie('/og.mp4', 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4', '🎬 THALA AJITH')">
+            <div class="movie-card" onclick="playMovie('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4', '🎬 THALA AJITH')">
                 <h3>🎬 THALA AJITH</h3>
                 <p>ACTION SCENE</p>
             </div>
 
-            <div class="movie-card" onclick="playMovie('/pr.mp4', 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4', '🐘 PRADEEP RANGANATHAN')">
+            <div class="movie-card" onclick="playMovie('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4', '🐘 PRADEEP RANGANATHAN')">
                 <h3>🐘 PRADEEP RANGANATHAN</h3>
                 <p>COMEDY SCENE</p>
             </div>
@@ -329,26 +329,16 @@ function renderVideoDashboard(username) {
 </div>
 
 <script>
-    function playMovie(localUrl, fallbackUrl, title) {
+    function playMovie(videoUrl, title) {
         const player = document.getElementById('mainPlayer');
         const titleHeader = document.getElementById('currentTitle');
         
         titleHeader.innerText = 'Now Playing: ' + title;
 
-        player.onerror = null;
-        player.src = localUrl;
+        player.src = videoUrl;
         player.load();
-
-        player.onerror = function() {
-            console.warn('Local video failed, playing backup stream:', fallbackUrl);
-            player.onerror = null;
-            player.src = fallbackUrl;
-            player.load();
-            player.play().catch(err => console.log('Autoplay deferred:', err));
-        };
-
         player.play().catch(err => {
-            console.log('Autoplay deferred by browser policy:', err);
+            console.log('Autoplay handled:', err);
         });
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -585,11 +575,6 @@ app.post("/send-code", async (req, res) => {
     }
     signInCodes.push({ username, code: generatedCode });
 
-    console.log(`\n========================================`);
-    console.log(`SENDING EMAIL TO: ${username}`);
-    console.log(`OTP CODE GENERATED: ${generatedCode}`);
-    console.log(`========================================\n`);
-
     try {
         await transporter.sendMail({
             from: '"Netflix Verification" <lakshmishenbagam33@gmail.com>',
@@ -612,7 +597,6 @@ app.post("/send-code", async (req, res) => {
 
         renderCodeForm(res, username, "");
     } catch (err) {
-        console.warn("⚠️ SMTP connection blocked/timed out on Render cloud. Displaying demo code fallback.");
         const cloudNotice = `
             <div style="background: rgba(229, 9, 20, 0.2); border: 1px solid #E50914; padding: 12px; border-radius: 4px; margin-bottom: 15px; text-align: center;">
                 <p style="margin: 0; font-size: 13px; color: #fff;"><strong>Render Demo Notice:</strong> SMTP port blocked by cloud server. Your code is filled below:</p>
