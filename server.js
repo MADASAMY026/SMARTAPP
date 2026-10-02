@@ -6,7 +6,7 @@ const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 
-// Prevent browser from caching dynamic HTML routes
+// Prevent browser caching during development and deployment
 app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     next();
@@ -20,14 +20,19 @@ const users = [];
 const signInCodes = [];
 
 // =====================================================
-// NODEMAILER TRANSPORTER SETUP
+// NODEMAILER TRANSPORTER SETUP (Optimized for Render Cloud)
 // =====================================================
 const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true, // Use SSL
     auth: {
         user: "lakshmishenbagam33@gmail.com",
         pass: "ltnwolynuigrsviq"
-    }
+    },
+    connectionTimeout: 10000, // 10 seconds timeout
+    greetingTimeout: 5000,
+    socketTimeout: 10000
 });
 
 // Verify Gmail SMTP connection on startup
@@ -409,6 +414,11 @@ app.get("/", (req, res) => {
     `);
 });
 
+// Redirect direct GET requests to /login back to home page
+app.get("/login", (req, res) => {
+    res.redirect("/");
+});
+
 // 2. REGISTER PAGE & LOGIC
 app.get("/register", (req, res) => {
     res.send(`
@@ -534,7 +544,7 @@ app.post("/send-code", async (req, res) => {
     }
 
     const generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
-    
+
     // Refresh temporary sign-in code entry
     const existingIndex = signInCodes.findIndex(c => c.username === username);
     if (existingIndex !== -1) {
@@ -768,7 +778,8 @@ app.post("/reset-password", (req, res) => {
     }
 });
 
-// START SERVER
-app.listen(3000, () => {
-    console.log("Express server running at http://localhost:3000");
+// START SERVER (Uses dynamic port assigned by Render cloud)
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Express server running on port ${PORT}`);
 });
