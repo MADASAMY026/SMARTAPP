@@ -271,6 +271,7 @@ const streamStyles = `
         color: #aaa;
     }
 `;
+
 function renderVideoDashboard(username) {
     return `
 <!DOCTYPE html>
@@ -355,6 +356,7 @@ function renderVideoDashboard(username) {
 </html>
     `;
 }
+
 // 1. LOGIN PAGE
 app.get("/", (req, res) => {
     res.send(`
@@ -572,7 +574,7 @@ app.post("/send-code", async (req, res) => {
     }
 
     const generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
-
+    
     // Refresh temporary sign-in code entry
     const existingIndex = signInCodes.findIndex(c => c.username === username);
     if (existingIndex !== -1) {
