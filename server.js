@@ -271,7 +271,6 @@ const streamStyles = `
         color: #aaa;
     }
 `;
-
 function renderVideoDashboard(username) {
     return `
 <!DOCTYPE html>
@@ -294,7 +293,7 @@ function renderVideoDashboard(username) {
     <h2 style="font-size: 28px; margin-bottom: 10px;" id="currentTitle">Now Playing: 🤖 THALAPATHY VIJAY MOVIE</h2>
     
     <div class="video-wrapper">
-        <video id="mainPlayer" controls autoplay muted playsinline src="/mpd.mp4">
+        <video id="mainPlayer" controls autoplay muted playsinline preload="metadata" src="/mpd.mp4">
             Your browser does not support HTML5 video.
         </video>
     </div>
@@ -334,8 +333,11 @@ function renderVideoDashboard(username) {
         
         titleHeader.innerText = 'Now Playing: ' + title;
 
+        if (player.src.endsWith(videoUrl)) return;
+
         player.pause();
         player.src = videoUrl;
+        player.preload = 'auto';
         player.load();
         
         const playPromise = player.play();
@@ -353,7 +355,6 @@ function renderVideoDashboard(username) {
 </html>
     `;
 }
-
 // 1. LOGIN PAGE
 app.get("/", (req, res) => {
     res.send(`
