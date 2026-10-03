@@ -56,9 +56,12 @@ const streamStyles = `
     }
 
     .auth-body {
-        background: radial-gradient(circle, rgba(20,20,20,0.85) 0%, rgba(0,0,0,0.95) 100%), #0d0d0d;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.85) 100%), 
+                    url('https://res.cloudinary.com/djzntongf/image/upload/v1791019129/photo.png');
         background-size: cover;
         background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
     }
 
     .header {
