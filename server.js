@@ -273,6 +273,11 @@ const streamStyles = `
 `;
 
 function renderVideoDashboard(username) {
+    const videoVijay = "https://res.cloudinary.com/djzntongf/video/upload/v1791009834/Thalapathy_Vijay__Most_Iconic_Dialogues___Leo_Ghilli_Thuppakki_Mersal_and_More___IMDb.mp4";
+    const videoAjith = "https://res.cloudinary.com/djzntongf/video/upload/v1791009914/Full_Video__OG_SAMBAVAM___Good_Bad_Ugly___Ajith___Trisha___G_V_Prakash___Adhik_Ravichandran.mp4";
+    const videoPradeep = "https://res.cloudinary.com/djzntongf/video/upload/v1791009936/Pradeep_Ranganathan_s_BEST_Moments___Dude_Love_Today_Dragon___Netflix_India.mp4";
+    const videoSciFi = "https://res.cloudinary.com/djzntongf/video/upload/v1791009983/gemini_generated_video_d41ed393.mp4";
+
     return `
 <!DOCTYPE html>
 <html>
@@ -294,7 +299,7 @@ function renderVideoDashboard(username) {
     <h2 style="font-size: 28px; margin-bottom: 10px;" id="currentTitle">Now Playing: 🤖 THALAPATHY VIJAY MOVIE</h2>
     
     <div class="video-wrapper">
-        <video id="mainPlayer" controls autoplay muted playsinline preload="metadata" src="/mpd.mp4">
+        <video id="mainPlayer" controls autoplay muted playsinline src="${videoVijay}">
             Your browser does not support HTML5 video.
         </video>
     </div>
@@ -303,22 +308,22 @@ function renderVideoDashboard(username) {
         <h3 style="font-size: 22px; margin-bottom: 15px; color: #e5e5e5;">Featured Scenes & Movies</h3>
         
         <div class="movie-grid">
-            <div class="movie-card" onclick="playMovie('/mpd.mp4', '🤖 THALAPATHY VIJAY MOVIE')">
+            <div class="movie-card" onclick="playMovie('${videoVijay}', '🤖 THALAPATHY VIJAY MOVIE')">
                 <h3>🤖 THALAPATHY VIJAY MOVIE</h3>
                 <p>DIALOGUE SCENE</p>
             </div>
 
-            <div class="movie-card" onclick="playMovie('/scifi.mp4', '🚀 Sci-Fi Asteroid Escape')">
+            <div class="movie-card" onclick="playMovie('${videoSciFi}', '🚀 Sci-Fi Asteroid Escape')">
                 <h3>🚀 Sci-Fi Asteroid Escape</h3>
                 <p>Spaceship Flight Sequence</p>
             </div>
 
-            <div class="movie-card" onclick="playMovie('/og.mp4', '🎬 THALA AJITH')">
+            <div class="movie-card" onclick="playMovie('${videoAjith}', '🎬 THALA AJITH')">
                 <h3>🎬 THALA AJITH</h3>
                 <p>ACTION SCENE</p>
             </div>
 
-            <div class="movie-card" onclick="playMovie('/pr.mp4', '🐘 PRADEEP RANGANATHAN')">
+            <div class="movie-card" onclick="playMovie('${videoPradeep}', '🐘 PRADEEP RANGANATHAN')">
                 <h3>🐘 PRADEEP RANGANATHAN</h3>
                 <p>COMEDY SCENE</p>
             </div>
@@ -334,11 +339,10 @@ function renderVideoDashboard(username) {
         
         titleHeader.innerText = 'Now Playing: ' + title;
 
-        if (player.src.endsWith(videoUrl)) return;
+        if (player.src === videoUrl) return;
 
         player.pause();
         player.src = videoUrl;
-        player.preload = 'auto';
         player.load();
         
         const playPromise = player.play();
