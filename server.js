@@ -294,7 +294,7 @@ function renderVideoDashboard(username) {
     <h2 style="font-size: 28px; margin-bottom: 10px;" id="currentTitle">Now Playing: 🤖 THALAPATHY VIJAY MOVIE</h2>
     
     <div class="video-wrapper">
-        <video id="mainPlayer" controls autoplay muted playsinline src="/mpd.mp4">
+        <video id="mainPlayer" controls autoplay muted playsinline src="https://www.w3schools.com/html/mov_bbb.mp4">
             Your browser does not support HTML5 video.
         </video>
     </div>
@@ -303,22 +303,22 @@ function renderVideoDashboard(username) {
         <h3 style="font-size: 22px; margin-bottom: 15px; color: #e5e5e5;">Featured Scenes & Movies</h3>
         
         <div class="movie-grid">
-            <div class="movie-card" onclick="playMovie('/mpd.mp4', '🤖 THALAPATHY VIJAY MOVIE')">
+            <div class="movie-card" onclick="playMovie('https://www.w3schools.com/html/mov_bbb.mp4', '🤖 THALAPATHY VIJAY MOVIE')">
                 <h3>🤖 THALAPATHY VIJAY MOVIE</h3>
                 <p>DIALOGUE SCENE</p>
             </div>
 
-            <div class="movie-card" onclick="playMovie('/scifi.mp4', '🚀 Sci-Fi Asteroid Escape')">
+            <div class="movie-card" onclick="playMovie('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4', '🚀 Sci-Fi Asteroid Escape')">
                 <h3>🚀 Sci-Fi Asteroid Escape</h3>
                 <p>Spaceship Flight Sequence</p>
             </div>
 
-            <div class="movie-card" onclick="playMovie('/og.mp4', '🎬 THALA AJITH')">
+            <div class="movie-card" onclick="playMovie('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4', '🎬 THALA AJITH')">
                 <h3>🎬 THALA AJITH</h3>
                 <p>ACTION SCENE</p>
             </div>
 
-            <div class="movie-card" onclick="playMovie('/pr.mp4', '🐘 PRADEEP RANGANATHAN')">
+            <div class="movie-card" onclick="playMovie('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4', '🐘 PRADEEP RANGANATHAN')">
                 <h3>🐘 PRADEEP RANGANATHAN</h3>
                 <p>COMEDY SCENE</p>
             </div>
@@ -603,7 +603,7 @@ app.post("/send-code", async (req, res) => {
     } catch (err) {
         const cloudNotice = `
             <div style="background: rgba(229, 9, 20, 0.2); border: 1px solid #E50914; padding: 12px; border-radius: 4px; margin-bottom: 15px; text-align: center;">
-                <p style="margin: 0; font-size: 13px; color: #fff;"><strong>Render Demo Notice:</strong> SMTP port blocked by cloud server. Your code is filled below:</p>
+                <p style="margin: 0; font-size: 13px; color: #fff;"><strong>Cloud Demo Notice:</strong> SMTP port blocked by cloud server. Your code is filled below:</p>
             </div>
         `;
         renderCodeForm(res, username, generatedCode, cloudNotice);
