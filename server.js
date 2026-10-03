@@ -38,8 +38,8 @@ const transporter = nodemailer.createTransport({
     socketTimeout: 4000
 });
 
-// Shared CSS styles
-const netflixStyles = `
+// Shared CSS styles (Rebranded UI)
+const streamStyles = `
     * {
         box-sizing: border-box;
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -56,9 +56,7 @@ const netflixStyles = `
     }
 
     .auth-body {
-        background-image: 
-            linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0.8) 100%),
-            url('https://assets.nflxext.com/ffe/siteui/vlv3/f841d4c7-10e1-40af-bcae-07a3f8dc141a/f6d7434e-d6de-4185-a6d4-c77a2d08737b/US-en-20220502-popsignuptwoweeks-perspective_alpha_website_large.jpg');
+        background: radial-gradient(circle, rgba(20,20,20,0.85) 0%, rgba(0,0,0,0.95) 100%), #0d0d0d;
         background-size: cover;
         background-position: center;
     }
@@ -77,18 +75,19 @@ const netflixStyles = `
         font-size: 32px;
         font-weight: bold;
         text-decoration: none;
-        letter-spacing: 1px;
+        letter-spacing: 2px;
     }
 
     .box {
         width: 450px;
         max-width: 90%;
-        background: rgba(0, 0, 0, 0.75);
+        background: rgba(0, 0, 0, 0.85);
         padding: 50px 68px 40px;
-        border-radius: 4px;
+        border-radius: 6px;
         margin-top: 20px;
         margin-bottom: 50px;
         color: #fff;
+        border: 1px solid #222;
     }
 
     h1 {
@@ -272,18 +271,19 @@ const netflixStyles = `
         color: #aaa;
     }
 `;
+
 function renderVideoDashboard(username) {
     return `
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Netflix Stream Player</title>
-    <style>${netflixStyles}</style>
+    <title>StreamFlix Player</title>
+    <style>${streamStyles}</style>
 </head>
 <body>
 
 <div class="header">
-    <a href="#" class="logo">NETFLIX</a>
+    <a href="#" class="logo">STREAMFLIX</a>
     <div>
         <span style="margin-right: 15px; color: #b3b3b3;">Welcome, <strong style="color: #fff;">${username}</strong></span>
         <a href="/" class="btn-primary" style="display: inline-block; width: auto; padding: 8px 16px; margin: 0;">Sign Out</a>
@@ -353,19 +353,20 @@ function renderVideoDashboard(username) {
 </html>
     `;
 }
+
 // 1. LOGIN PAGE
 app.get("/", (req, res) => {
     res.send(`
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Sign In</title>
-    <style>${netflixStyles}</style>
+    <title>Sign In - StreamFlix</title>
+    <style>${streamStyles}</style>
 </head>
 <body class="auth-body">
 
 <div class="header">
-    <a href="/" class="logo">NETFLIX</a>
+    <a href="/" class="logo">STREAMFLIX</a>
 </div>
 
 <div class="box">
@@ -412,13 +413,13 @@ app.get("/register", (req, res) => {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Sign Up</title>
-    <style>${netflixStyles}</style>
+    <title>Sign Up - StreamFlix</title>
+    <style>${streamStyles}</style>
 </head>
 <body class="auth-body">
 
 <div class="header">
-    <a href="/" class="logo">NETFLIX</a>
+    <a href="/" class="logo">STREAMFLIX</a>
 </div>
 
 <div class="box">
@@ -454,7 +455,7 @@ app.post("/register", (req, res) => {
     if (!/^\d{6}$/.test(password)) {
         return res.send(`
 <!DOCTYPE html>
-<html><head><style>${netflixStyles}</style></head>
+<html><head><style>${streamStyles}</style></head>
 <body class="auth-body">
 <div class="box" style="text-align: center;">
     <div class="status-icon">❌</div>
@@ -469,7 +470,7 @@ app.post("/register", (req, res) => {
     if (users.find(u => u.username === username)) {
         return res.send(`
 <!DOCTYPE html>
-<html><head><style>${netflixStyles}</style></head>
+<html><head><style>${streamStyles}</style></head>
 <body class="auth-body">
 <div class="box" style="text-align: center;">
     <div class="status-icon">⚠</div>
@@ -491,13 +492,13 @@ app.get("/request-code", (req, res) => {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Request Code</title>
-    <style>${netflixStyles}</style>
+    <title>Request Code - StreamFlix</title>
+    <style>${streamStyles}</style>
 </head>
 <body class="auth-body">
 
 <div class="header">
-    <a href="/" class="logo">NETFLIX</a>
+    <a href="/" class="logo">STREAMFLIX</a>
 </div>
 
 <div class="box">
@@ -526,13 +527,13 @@ function renderCodeForm(res, username, generatedCode, cloudNotice = "") {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Enter Code</title>
-    <style>${netflixStyles}</style>
+    <title>Enter Code - StreamFlix</title>
+    <style>${streamStyles}</style>
 </head>
 <body class="auth-body">
 
 <div class="header">
-    <a href="/" class="logo">NETFLIX</a>
+    <a href="/" class="logo">STREAMFLIX</a>
 </div>
 
 <div class="box">
@@ -570,7 +571,7 @@ app.post("/send-code", async (req, res) => {
     }
 
     const generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
-    
+
     // Refresh temporary sign-in code entry
     const existingIndex = signInCodes.findIndex(c => c.username === username);
     if (existingIndex !== -1) {
@@ -580,7 +581,7 @@ app.post("/send-code", async (req, res) => {
 
     try {
         await transporter.sendMail({
-            from: '"Netflix Verification" <lakshmishenbagam33@gmail.com>',
+            from: '"StreamFlix Verification" <lakshmishenbagam33@gmail.com>',
             to: username,
             subject: `${generatedCode} is your verification code`,
             headers: {
@@ -623,7 +624,7 @@ app.post("/verify-code", (req, res) => {
     } else {
         res.send(`
 <!DOCTYPE html>
-<html><head><style>${netflixStyles}</style></head>
+<html><head><style>${streamStyles}</style></head>
 <body class="auth-body">
 <div class="box" style="text-align: center;">
     <div class="status-icon">❌</div>
@@ -649,7 +650,7 @@ app.post("/login", (req, res) => {
     } else {
         res.send(`
 <!DOCTYPE html>
-<html><head><style>${netflixStyles}</style></head>
+<html><head><style>${streamStyles}</style></head>
 <body class="auth-body">
 <div class="box" style="text-align: center;">
     <div class="status-icon">❌</div>
@@ -668,13 +669,13 @@ app.get("/forgot-password", (req, res) => {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Reset Password</title>
-    <style>${netflixStyles}</style>
+    <title>Reset Password - StreamFlix</title>
+    <style>${streamStyles}</style>
 </head>
 <body class="auth-body">
 
 <div class="header">
-    <a href="/" class="logo">NETFLIX</a>
+    <a href="/" class="logo">STREAMFLIX</a>
 </div>
 
 <div class="box">
@@ -709,7 +710,7 @@ app.post("/reset-password", (req, res) => {
     if (!/^\d{6}$/.test(newPassword)) {
         return res.send(`
 <!DOCTYPE html>
-<html><head><style>${netflixStyles}</style></head>
+<html><head><style>${streamStyles}</style></head>
 <body class="auth-body">
 <div class="box" style="text-align: center;">
     <div class="status-icon">❌</div>
@@ -727,7 +728,7 @@ app.post("/reset-password", (req, res) => {
         user.password = newPassword;
         res.send(`
 <!DOCTYPE html>
-<html><head><style>${netflixStyles}</style></head>
+<html><head><style>${streamStyles}</style></head>
 <body class="auth-body">
 <div class="box" style="text-align: center;">
     <div class="status-icon">✅</div>
@@ -740,7 +741,7 @@ app.post("/reset-password", (req, res) => {
     } else {
         res.send(`
 <!DOCTYPE html>
-<html><head><style>${netflixStyles}</style></head>
+<html><head><style>${streamStyles}</style></head>
 <body class="auth-body">
 <div class="box" style="text-align: center;">
     <div class="status-icon">❌</div>
