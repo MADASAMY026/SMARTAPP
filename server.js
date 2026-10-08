@@ -281,10 +281,15 @@ const streamStyles = `
 `;
 
 function renderVideoDashboard(username) {
+    // YouTube Full Movies
     const videoNanban = "https://www.youtube.com/embed/PFL0z-78ZUc";
     const videoMyLord = "https://www.youtube.com/embed/I7DzI3ItnnM";
     const videoFriends = "https://www.youtube.com/embed/Cnqqp1pQ5mQ";
-    const videoMotiveForMurder = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4";
+
+    // Cloudinary Direct MP4 Videos
+    const videoVijay = "https://res.cloudinary.com/djzntongf/video/upload/v1791009834/Thalapathy_Vijay__Most_Iconic_Dialogues___Leo_Ghilli_Thuppakki_Mersal_and_More___IMDb.mp4";
+    const videoAjith = "https://res.cloudinary.com/djzntongf/video/upload/v1791009914/Full_Video__OG_SAMBAVAM___Good_Bad_Ugly___Ajith___Trisha___G_V_Prakash___Adhik_Ravichandran.mp4";
+    const videoPradeep = "https://res.cloudinary.com/djzntongf/video/upload/v1791009936/Pradeep_Ranganathan_s_BEST_Moments___Dude_Love_Today_Dragon___Netflix_India.mp4";
 
     return `
 <!DOCTYPE html>
@@ -305,16 +310,33 @@ function renderVideoDashboard(username) {
 </div>
 
 <div class="dashboard-container">
-    <h2 style="font-size: 28px; margin-bottom: 10px;" id="currentTitle">Now Playing: 🎬 Nanban - Full Comedy Movie</h2>
+    <h2 style="font-size: 28px; margin-bottom: 10px;" id="currentTitle">Now Playing: 🤖 THALAPATHY VIJAY - Iconic Dialogues</h2>
     
     <div class="video-wrapper" id="playerContainer">
-        <iframe src="${videoNanban}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <video id="mainPlayer" controls autoplay playsinline src="${videoVijay}">
+            Your browser does not support HTML5 video.
+        </video>
     </div>
 
     <div class="movie-selection">
-        <h3 style="font-size: 22px; margin-bottom: 15px; color: #e5e5e5;">Featured Movies</h3>
+        <h3 style="font-size: 22px; margin-bottom: 15px; color: #e5e5e5;">Featured Movies & Videos</h3>
         
         <div class="movie-grid">
+            <div class="movie-card" onclick="playMovie('${videoVijay}', '🤖 THALAPATHY VIJAY - Iconic Dialogues')">
+                <h3>🤖 THALAPATHY VIJAY</h3>
+                <p>ICONIC DIALOGUES (MP4)</p>
+            </div>
+
+            <div class="movie-card" onclick="playMovie('${videoAjith}', '🎬 THALA AJITH - OG Sambavam')">
+                <h3>🎬 THALA AJITH</h3>
+                <p>GOOD BAD UGLY (MP4)</p>
+            </div>
+
+            <div class="movie-card" onclick="playMovie('${videoPradeep}', '🔥 PRADEEP RANGANATHAN - Best Moments')">
+                <h3>🔥 PRADEEP RANGANATHAN</h3>
+                <p>BEST MOMENTS (MP4)</p>
+            </div>
+
             <div class="movie-card" onclick="playMovie('${videoNanban}', '🎬 Nanban - Full Comedy Movie')">
                 <h3>🎬 Nanban (Vijay)</h3>
                 <p>TAMIL FULL MOVIE (YOUTUBE)</p>
@@ -328,11 +350,6 @@ function renderVideoDashboard(username) {
             <div class="movie-card" onclick="playMovie('${videoFriends}', '👬 Friends (2001) - Vijay & Suriya')">
                 <h3>👬 Friends (2001)</h3>
                 <p>TAMIL FULL MOVIE (YOUTUBE)</p>
-            </div>
-
-            <div class="movie-card" onclick="playMovie('${videoMotiveForMurder}', '🎬 Motive for Murder')">
-                <h3>🎬 Motive for Murder</h3>
-                <p>FEATURE FILM (DIRECT MP4)</p>
             </div>
         </div>
     </div>
