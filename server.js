@@ -282,7 +282,7 @@ const streamStyles = `
 
 function renderVideoDashboard(username) {
     // YouTube Full Movies
-    const videoNanban = "https://www.youtube.com/embed/PFL0z-78ZUc";
+    const videoNanban = "https://youtu.be/ZU9Pmule2gg";
     const videoMyLord = "https://www.youtube.com/embed/I7DzI3ItnnM";
     const videoFriends = "https://www.youtube.com/embed/Cnqqp1pQ5mQ";
 
