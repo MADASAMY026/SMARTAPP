@@ -221,19 +221,24 @@ const streamStyles = `
     }
 
     .video-wrapper {
-        width: 100%;
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+        height: 0;
+        overflow: hidden;
         background: #000;
         border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.8);
         border: 1px solid #333;
+        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.8);
     }
 
-    video {
+    .video-wrapper iframe,
+    .video-wrapper video {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
-        height: auto;
-        max-height: 580px;
-        display: block;
+        height: 100%;
+        border: none;
     }
 
     .movie-selection {
@@ -273,27 +278,13 @@ const streamStyles = `
         font-size: 13px;
         color: #aaa;
     }
-
-    .tag-hls {
-        display: inline-block;
-        background: #E50914;
-        color: #fff;
-        font-size: 10px;
-        font-weight: bold;
-        padding: 2px 6px;
-        border-radius: 3px;
-        margin-bottom: 6px;
-    }
 `;
 
 function renderVideoDashboard(username) {
-    const videoVijay = "https://res.cloudinary.com/djzntongf/video/upload/v1791009834/Thalapathy_Vijay__Most_Iconic_Dialogues___Leo_Ghilli_Thuppakki_Mersal_and_More___IMDb.mp4";
-    const videoAjith = "https://res.cloudinary.com/djzntongf/video/upload/v1791009914/Full_Video__OG_SAMBAVAM___Good_Bad_Ugly___Ajith___Trisha___G_V_Prakash___Adhik_Ravichandran.mp4";
-    const videoPradeep = "https://res.cloudinary.com/djzntongf/video/upload/v1791009936/Pradeep_Ranganathan_s_BEST_Moments___Dude_Love_Today_Dragon___Netflix_India.mp4";
-    const videoSciFi = "https://res.cloudinary.com/djzntongf/video/upload/v1791009983/gemini_generated_video_d41ed393.mp4";
-    
-    // Sample Full-Length HLS Stream (.m3u8)
-    const videoHlsDemo = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8";
+    const videoNanban = "https://www.youtube.com/embed/PFL0z-78ZUc";
+    const videoMyLord = "https://www.youtube.com/embed/I7DzI3ItnnM";
+    const videoFriends = "https://www.youtube.com/embed/Cnqqp1pQ5mQ";
+    const videoMotiveForMurder = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4";
 
     return `
 <!DOCTYPE html>
@@ -301,13 +292,12 @@ function renderVideoDashboard(username) {
 <head>
     <title>StreamFlix Player</title>
     <style>${streamStyles}</style>
-    <!-- HLS.js Library for multi-hour adaptive bitrate video streaming -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body>
 
 <div class="header">
-    <a href="#" class="logo">STREAMFLIX</a>
+    <a href="/" class="logo">STREAMFLIX</a>
     <div>
         <span style="margin-right: 15px; color: #b3b3b3;">Welcome, <strong style="color: #fff;">${username}</strong></span>
         <a href="/" class="btn-primary" style="display: inline-block; width: auto; padding: 8px 16px; margin: 0;">Sign Out</a>
@@ -315,42 +305,34 @@ function renderVideoDashboard(username) {
 </div>
 
 <div class="dashboard-container">
-    <h2 style="font-size: 28px; margin-bottom: 10px;" id="currentTitle">Now Playing: 🤖 THALAPATHY VIJAY MOVIE</h2>
+    <h2 style="font-size: 28px; margin-bottom: 10px;" id="currentTitle">Now Playing: 🎬 Nanban - Full Comedy Movie</h2>
     
-    <div class="video-wrapper">
-        <video id="mainPlayer" controls autoplay muted playsinline src="${videoVijay}">
-            Your browser does not support HTML5 video.
-        </video>
+    <div class="video-wrapper" id="playerContainer">
+        <iframe src="${videoNanban}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
 
     <div class="movie-selection">
-        <h3 style="font-size: 22px; margin-bottom: 15px; color: #e5e5e5;">Featured Scenes & Movies</h3>
+        <h3 style="font-size: 22px; margin-bottom: 15px; color: #e5e5e5;">Featured Movies</h3>
         
         <div class="movie-grid">
-            <div class="movie-card" onclick="playMovie('${videoVijay}', '🤖 THALAPATHY VIJAY MOVIE')">
-                <h3>🤖 THALAPATHY VIJAY MOVIE</h3>
-                <p>DIALOGUE SCENE (MP4)</p>
+            <div class="movie-card" onclick="playMovie('${videoNanban}', '🎬 Nanban - Full Comedy Movie')">
+                <h3>🎬 Nanban (Vijay)</h3>
+                <p>TAMIL FULL MOVIE (YOUTUBE)</p>
             </div>
 
-            <div class="movie-card" onclick="playMovie('${videoHlsDemo}', '🍿 Full Feature Movie (HLS Stream)')">
-                <span class="tag-hls">3-HOUR READY (HLS)</span>
-                <h3>🍿 Full Feature Stream</h3>
-                <p>Adaptive Bitrate Stream (.m3u8)</p>
+            <div class="movie-card" onclick="playMovie('${videoMyLord}', '⚖️ My Lord (2026) - Sasikumar')">
+                <h3>⚖️ My Lord (2026)</h3>
+                <p>TAMIL FULL MOVIE (YOUTUBE)</p>
             </div>
 
-            <div class="movie-card" onclick="playMovie('${videoAjith}', '🎬 THALA AJITH')">
-                <h3>🎬 THALA AJITH</h3>
-                <p>ACTION SCENE (MP4)</p>
+            <div class="movie-card" onclick="playMovie('${videoFriends}', '👬 Friends (2001) - Vijay & Suriya')">
+                <h3>👬 Friends (2001)</h3>
+                <p>TAMIL FULL MOVIE (YOUTUBE)</p>
             </div>
 
-            <div class="movie-card" onclick="playMovie('${videoPradeep}', '🐘 PRADEEP RANGANATHAN')">
-                <h3>🐘 PRADEEP RANGANATHAN</h3>
-                <p>COMEDY SCENE (MP4)</p>
-            </div>
-
-            <div class="movie-card" onclick="playMovie('${videoSciFi}', '🚀 Sci-Fi Asteroid Escape')">
-                <h3>🚀 Sci-Fi Asteroid Escape</h3>
-                <p>Spaceship Flight Sequence (MP4)</p>
+            <div class="movie-card" onclick="playMovie('${videoMotiveForMurder}', '🎬 Motive for Murder')">
+                <h3>🎬 Motive for Murder</h3>
+                <p>FEATURE FILM (DIRECT MP4)</p>
             </div>
         </div>
     </div>
@@ -360,19 +342,21 @@ function renderVideoDashboard(username) {
     let hlsInstance = null;
 
     function playMovie(videoUrl, title) {
-        const player = document.getElementById('mainPlayer');
+        const container = document.getElementById('playerContainer');
         const titleHeader = document.getElementById('currentTitle');
         
         titleHeader.innerText = 'Now Playing: ' + title;
 
-        // Clean up previous HLS instance if switching streams
         if (hlsInstance) {
             hlsInstance.destroy();
             hlsInstance = null;
         }
 
-        // Check if the video is an HLS playlist (.m3u8)
-        if (videoUrl.includes('.m3u8')) {
+        if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+            container.innerHTML = \`<iframe src="\${videoUrl}?autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>\`;
+        } else if (videoUrl.includes('.m3u8')) {
+            container.innerHTML = \`<video id="mainPlayer" controls autoplay playsinline></video>\`;
+            const player = document.getElementById('mainPlayer');
             if (Hls.isSupported()) {
                 hlsInstance = new Hls();
                 hlsInstance.loadSource(videoUrl);
@@ -381,14 +365,12 @@ function renderVideoDashboard(username) {
                     player.play().catch(e => console.log('Autoplay deferred:', e));
                 });
             } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
-                // Native HLS support for Safari / iOS
                 player.src = videoUrl;
                 player.play();
             }
         } else {
-            // Standard MP4 video playback
-            player.src = videoUrl;
-            player.load();
+            container.innerHTML = \`<video id="mainPlayer" controls autoplay playsinline src="\${videoUrl}"></video>\`;
+            const player = document.getElementById('mainPlayer');
             player.play().catch(e => console.log('Autoplay deferred:', e));
         }
 
