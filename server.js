@@ -273,6 +273,17 @@ const streamStyles = `
         font-size: 13px;
         color: #aaa;
     }
+
+    .tag-hls {
+        display: inline-block;
+        background: #E50914;
+        color: #fff;
+        font-size: 10px;
+        font-weight: bold;
+        padding: 2px 6px;
+        border-radius: 3px;
+        margin-bottom: 6px;
+    }
 `;
 
 function renderVideoDashboard(username) {
@@ -280,6 +291,9 @@ function renderVideoDashboard(username) {
     const videoAjith = "https://res.cloudinary.com/djzntongf/video/upload/v1791009914/Full_Video__OG_SAMBAVAM___Good_Bad_Ugly___Ajith___Trisha___G_V_Prakash___Adhik_Ravichandran.mp4";
     const videoPradeep = "https://res.cloudinary.com/djzntongf/video/upload/v1791009936/Pradeep_Ranganathan_s_BEST_Moments___Dude_Love_Today_Dragon___Netflix_India.mp4";
     const videoSciFi = "https://res.cloudinary.com/djzntongf/video/upload/v1791009983/gemini_generated_video_d41ed393.mp4";
+    
+    // Sample Full-Length HLS Stream (.m3u8)
+    const videoHlsDemo = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8";
 
     return `
 <!DOCTYPE html>
@@ -287,6 +301,8 @@ function renderVideoDashboard(username) {
 <head>
     <title>StreamFlix Player</title>
     <style>${streamStyles}</style>
+    <!-- HLS.js Library for multi-hour adaptive bitrate video streaming -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body>
 
@@ -313,46 +329,67 @@ function renderVideoDashboard(username) {
         <div class="movie-grid">
             <div class="movie-card" onclick="playMovie('${videoVijay}', '🤖 THALAPATHY VIJAY MOVIE')">
                 <h3>🤖 THALAPATHY VIJAY MOVIE</h3>
-                <p>DIALOGUE SCENE</p>
+                <p>DIALOGUE SCENE (MP4)</p>
             </div>
 
-            <div class="movie-card" onclick="playMovie('${videoSciFi}', '🚀 Sci-Fi Asteroid Escape')">
-                <h3>🚀 Sci-Fi Asteroid Escape</h3>
-                <p>Spaceship Flight Sequence</p>
+            <div class="movie-card" onclick="playMovie('${videoHlsDemo}', '🍿 Full Feature Movie (HLS Stream)')">
+                <span class="tag-hls">3-HOUR READY (HLS)</span>
+                <h3>🍿 Full Feature Stream</h3>
+                <p>Adaptive Bitrate Stream (.m3u8)</p>
             </div>
 
             <div class="movie-card" onclick="playMovie('${videoAjith}', '🎬 THALA AJITH')">
                 <h3>🎬 THALA AJITH</h3>
-                <p>ACTION SCENE</p>
+                <p>ACTION SCENE (MP4)</p>
             </div>
 
             <div class="movie-card" onclick="playMovie('${videoPradeep}', '🐘 PRADEEP RANGANATHAN')">
                 <h3>🐘 PRADEEP RANGANATHAN</h3>
-                <p>COMEDY SCENE</p>
+                <p>COMEDY SCENE (MP4)</p>
             </div>
 
+            <div class="movie-card" onclick="playMovie('${videoSciFi}', '🚀 Sci-Fi Asteroid Escape')">
+                <h3>🚀 Sci-Fi Asteroid Escape</h3>
+                <p>Spaceship Flight Sequence (MP4)</p>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
+    let hlsInstance = null;
+
     function playMovie(videoUrl, title) {
         const player = document.getElementById('mainPlayer');
         const titleHeader = document.getElementById('currentTitle');
         
         titleHeader.innerText = 'Now Playing: ' + title;
 
-        if (player.src === videoUrl) return;
+        // Clean up previous HLS instance if switching streams
+        if (hlsInstance) {
+            hlsInstance.destroy();
+            hlsInstance = null;
+        }
 
-        player.pause();
-        player.src = videoUrl;
-        player.load();
-        
-        const playPromise = player.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(error => {
-                console.log('Autoplay deferred:', error);
-            });
+        // Check if the video is an HLS playlist (.m3u8)
+        if (videoUrl.includes('.m3u8')) {
+            if (Hls.isSupported()) {
+                hlsInstance = new Hls();
+                hlsInstance.loadSource(videoUrl);
+                hlsInstance.attachMedia(player);
+                hlsInstance.on(Hls.Events.MANIFEST_PARSED, function() {
+                    player.play().catch(e => console.log('Autoplay deferred:', e));
+                });
+            } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
+                // Native HLS support for Safari / iOS
+                player.src = videoUrl;
+                player.play();
+            }
+        } else {
+            // Standard MP4 video playback
+            player.src = videoUrl;
+            player.load();
+            player.play().catch(e => console.log('Autoplay deferred:', e));
         }
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
