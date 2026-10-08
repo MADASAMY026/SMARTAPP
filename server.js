@@ -282,7 +282,7 @@ const streamStyles = `
 
 function renderVideoDashboard(username) {
     // YouTube Full Movies
-    const videoNanban = "https://youtu.be/ZU9Pmule2gg";
+    const videoNanban = "https://www.youtube.com/embed/ZU9Pmule2gg";
     const videoMyLord = "https://www.youtube.com/embed/I7DzI3ItnnM";
     const videoFriends = "https://www.youtube.com/embed/Cnqqp1pQ5mQ";
 
@@ -358,6 +358,18 @@ function renderVideoDashboard(username) {
 <script>
     let hlsInstance = null;
 
+    function formatYouTubeUrl(url) {
+        if (url.includes('youtu.be/')) {
+            const id = url.split('youtu.be/')[1].split('?')[0];
+            return 'https://www.youtube.com/embed/' + id;
+        }
+        if (url.includes('watch?v=')) {
+            const id = url.split('watch?v=')[1].split('&')[0];
+            return 'https://www.youtube.com/embed/' + id;
+        }
+        return url;
+    }
+
     function playMovie(videoUrl, title) {
         const container = document.getElementById('playerContainer');
         const titleHeader = document.getElementById('currentTitle');
@@ -370,7 +382,8 @@ function renderVideoDashboard(username) {
         }
 
         if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
-            container.innerHTML = \`<iframe src="\${videoUrl}?autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>\`;
+            const embedUrl = formatYouTubeUrl(videoUrl);
+            container.innerHTML = \`<iframe src="\${embedUrl}?autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>\`;
         } else if (videoUrl.includes('.m3u8')) {
             container.innerHTML = \`<video id="mainPlayer" controls autoplay playsinline></video>\`;
             const player = document.getElementById('mainPlayer');
