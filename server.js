@@ -38,7 +38,7 @@ const transporter = nodemailer.createTransport({
     socketTimeout: 4000
 });
 
-// Shared CSS styles (StreamFlix Rebranded UI)
+// Shared CSS styles (Fully Responsive UI for Mobile, Tablet, Laptop, and PC)
 const streamStyles = `
     * {
         box-sizing: border-box;
@@ -53,6 +53,7 @@ const streamStyles = `
         display: flex;
         flex-direction: column;
         align-items: center;
+        overflow-x: hidden;
     }
 
     .auth-body {
@@ -66,16 +67,16 @@ const streamStyles = `
 
     .header {
         width: 100%;
-        padding: 20px 50px;
+        padding: 16px 40px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+        background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, transparent 100%);
     }
 
     .logo {
         color: #E50914;
-        font-size: 32px;
+        font-size: 30px;
         font-weight: bold;
         text-decoration: none;
         letter-spacing: 2px;
@@ -83,9 +84,9 @@ const streamStyles = `
 
     .box {
         width: 450px;
-        max-width: 90%;
+        max-width: 92%;
         background: rgba(0, 0, 0, 0.85);
-        padding: 50px 68px 40px;
+        padding: 40px 30px;
         border-radius: 6px;
         margin-top: 20px;
         margin-bottom: 50px;
@@ -94,10 +95,10 @@ const streamStyles = `
     }
 
     h1 {
-        font-size: 32px;
+        font-size: 28px;
         font-weight: 700;
         margin-top: 0;
-        margin-bottom: 24px;
+        margin-bottom: 20px;
     }
 
     .input-group {
@@ -106,7 +107,7 @@ const streamStyles = `
 
     input {
         width: 100%;
-        padding: 16px 20px;
+        padding: 14px 16px;
         border: none;
         border-radius: 4px;
         background: #333;
@@ -121,7 +122,7 @@ const streamStyles = `
 
     button, .btn-primary {
         width: 100%;
-        padding: 16px;
+        padding: 14px;
         border: none;
         border-radius: 4px;
         background: #E50914;
@@ -129,7 +130,7 @@ const streamStyles = `
         font-size: 16px;
         font-weight: bold;
         cursor: pointer;
-        margin-top: 20px;
+        margin-top: 16px;
         margin-bottom: 12px;
         transition: background 0.2s ease;
         text-align: center;
@@ -151,7 +152,7 @@ const streamStyles = `
 
     .btn-secondary {
         width: 100%;
-        padding: 14px;
+        padding: 12px;
         border: none;
         border-radius: 4px;
         background: rgba(255, 255, 255, 0.2);
@@ -187,7 +188,7 @@ const streamStyles = `
     .switch-page {
         margin-top: 16px;
         color: #737373;
-        font-size: 16px;
+        font-size: 15px;
     }
 
     .switch-page a {
@@ -201,7 +202,7 @@ const streamStyles = `
     }
 
     .status-icon {
-        font-size: 50px;
+        font-size: 45px;
         text-align: center;
         margin-bottom: 15px;
     }
@@ -214,15 +215,18 @@ const streamStyles = `
         color: #2e7d32;
     }
 
+    /* Fully Responsive Dashboard Layout */
     .dashboard-container {
         width: 100%;
-        max-width: 1100px;
+        max-width: 1200px;
         padding: 20px;
     }
 
+    /* Responsive 16:9 Aspect Ratio Video Screen */
     .video-wrapper {
         position: relative;
-        padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+        width: 100%;
+        padding-bottom: 56.25%; /* Maintains 16:9 aspect ratio on all screen sizes */
         height: 0;
         overflow: hidden;
         background: #000;
@@ -239,6 +243,7 @@ const streamStyles = `
         width: 100%;
         height: 100%;
         border: none;
+        object-fit: contain;
     }
 
     .movie-selection {
@@ -247,36 +252,103 @@ const streamStyles = `
 
     .movie-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 16px;
         margin-top: 15px;
     }
 
     .movie-card {
         background: #222;
         border-radius: 6px;
-        padding: 15px;
+        padding: 14px;
         cursor: pointer;
         transition: transform 0.2s ease, background 0.2s ease;
         border: 1px solid #333;
     }
 
     .movie-card:hover {
-        transform: scale(1.03);
+        transform: translateY(-3px);
         background: #333;
         border-color: #E50914;
     }
 
     .movie-card h3 {
-        margin: 0 0 8px 0;
-        font-size: 18px;
+        margin: 0 0 6px 0;
+        font-size: 16px;
         color: #fff;
     }
 
     .movie-card p {
         margin: 0;
-        font-size: 13px;
+        font-size: 12px;
         color: #aaa;
+    }
+
+    /* Screen Responsiveness Rules for Tablet & Mobile */
+    @media (max-width: 768px) {
+        .header {
+            padding: 12px 20px;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .header > div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .dashboard-container {
+            padding: 12px;
+        }
+
+        #currentTitle {
+            font-size: 20px !important;
+            margin-bottom: 12px !important;
+        }
+
+        .movie-grid {
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .movie-card {
+            padding: 10px;
+        }
+
+        .movie-card h3 {
+            font-size: 14px;
+        }
+
+        .movie-card p {
+            font-size: 11px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .logo {
+            font-size: 24px;
+        }
+
+        #currentTitle {
+            font-size: 16px !important;
+        }
+
+        .box {
+            padding: 25px 18px;
+        }
+
+        input {
+            padding: 12px 14px;
+            font-size: 14px;
+        }
+
+        button, .btn-primary {
+            padding: 12px;
+            font-size: 14px;
+        }
     }
 `;
 
@@ -295,6 +367,7 @@ function renderVideoDashboard(username) {
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StreamFlix Player</title>
     <style>${streamStyles}</style>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
@@ -304,13 +377,13 @@ function renderVideoDashboard(username) {
 <div class="header">
     <a href="/" class="logo">STREAMFLIX</a>
     <div>
-        <span style="margin-right: 15px; color: #b3b3b3;">Welcome, <strong style="color: #fff;">${username}</strong></span>
-        <a href="/" class="btn-primary" style="display: inline-block; width: auto; padding: 8px 16px; margin: 0;">Sign Out</a>
+        <span style="margin-right: 12px; color: #b3b3b3; font-size: 14px;">Welcome, <strong style="color: #fff;">${username}</strong></span>
+        <a href="/" class="btn-primary" style="display: inline-block; width: auto; padding: 6px 14px; margin: 0; font-size: 13px;">Sign Out</a>
     </div>
 </div>
 
 <div class="dashboard-container">
-    <h2 style="font-size: 28px; margin-bottom: 10px;" id="currentTitle">Now Playing: 🤖 THALAPATHY VIJAY - Iconic Dialogues</h2>
+    <h2 style="font-size: 26px; margin-bottom: 15px;" id="currentTitle">Now Playing: 🤖 THALAPATHY VIJAY - Iconic Dialogues</h2>
     
     <div class="video-wrapper" id="playerContainer">
         <video id="mainPlayer" controls autoplay playsinline src="${videoVijay}">
@@ -319,7 +392,7 @@ function renderVideoDashboard(username) {
     </div>
 
     <div class="movie-selection">
-        <h3 style="font-size: 22px; margin-bottom: 15px; color: #e5e5e5;">Featured Movies & Videos</h3>
+        <h3 style="font-size: 20px; margin-bottom: 12px; color: #e5e5e5;">Featured Movies & Videos</h3>
         
         <div class="movie-grid">
             <div class="movie-card" onclick="playMovie('${videoVijay}', '🤖 THALAPATHY VIJAY - Iconic Dialogues')">
@@ -419,6 +492,7 @@ app.get("/", (req, res) => {
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In - StreamFlix</title>
     <style>${streamStyles}</style>
 </head>
@@ -472,6 +546,7 @@ app.get("/register", (req, res) => {
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - StreamFlix</title>
     <style>${streamStyles}</style>
 </head>
@@ -514,7 +589,7 @@ app.post("/register", (req, res) => {
     if (!/^\d{6}$/.test(password)) {
         return res.send(`
 <!DOCTYPE html>
-<html><head><style>${streamStyles}</style></head>
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>${streamStyles}</style></head>
 <body class="auth-body">
 <div class="box" style="text-align: center;">
     <div class="status-icon">❌</div>
@@ -529,7 +604,7 @@ app.post("/register", (req, res) => {
     if (users.find(u => u.username === username)) {
         return res.send(`
 <!DOCTYPE html>
-<html><head><style>${streamStyles}</style></head>
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>${streamStyles}</style></head>
 <body class="auth-body">
 <div class="box" style="text-align: center;">
     <div class="status-icon">⚠</div>
@@ -551,6 +626,7 @@ app.get("/request-code", (req, res) => {
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Request Code - StreamFlix</title>
     <style>${streamStyles}</style>
 </head>
@@ -586,6 +662,7 @@ function renderCodeForm(res, username, generatedCode, cloudNotice = "") {
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enter Code - StreamFlix</title>
     <style>${streamStyles}</style>
 </head>
@@ -683,7 +760,7 @@ app.post("/verify-code", (req, res) => {
     } else {
         res.send(`
 <!DOCTYPE html>
-<html><head><style>${streamStyles}</style></head>
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>${streamStyles}</style></head>
 <body class="auth-body">
 <div class="box" style="text-align: center;">
     <div class="status-icon">❌</div>
@@ -709,7 +786,7 @@ app.post("/login", (req, res) => {
     } else {
         res.send(`
 <!DOCTYPE html>
-<html><head><style>${streamStyles}</style></head>
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>${streamStyles}</style></head>
 <body class="auth-body">
 <div class="box" style="text-align: center;">
     <div class="status-icon">❌</div>
@@ -728,6 +805,7 @@ app.get("/forgot-password", (req, res) => {
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password - StreamFlix</title>
     <style>${streamStyles}</style>
 </head>
@@ -769,7 +847,7 @@ app.post("/reset-password", (req, res) => {
     if (!/^\d{6}$/.test(newPassword)) {
         return res.send(`
 <!DOCTYPE html>
-<html><head><style>${streamStyles}</style></head>
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>${streamStyles}</style></head>
 <body class="auth-body">
 <div class="box" style="text-align: center;">
     <div class="status-icon">❌</div>
@@ -787,7 +865,7 @@ app.post("/reset-password", (req, res) => {
         user.password = newPassword;
         res.send(`
 <!DOCTYPE html>
-<html><head><style>${streamStyles}</style></head>
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>${streamStyles}</style></head>
 <body class="auth-body">
 <div class="box" style="text-align: center;">
     <div class="status-icon">✅</div>
@@ -800,7 +878,7 @@ app.post("/reset-password", (req, res) => {
     } else {
         res.send(`
 <!DOCTYPE html>
-<html><head><style>${streamStyles}</style></head>
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>${streamStyles}</style></head>
 <body class="auth-body">
 <div class="box" style="text-align: center;">
     <div class="status-icon">❌</div>
